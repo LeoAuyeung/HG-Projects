@@ -1,0 +1,93 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+	<title>Ball-Z</title>
+	<style>
+	</style>
+</head>
+
+<body>
+	
+	<canvas id="myCanvas" style="border:1px solid #d3d3d3;">
+	</canvas>
+	
+	
+	<button onclick="loop()">Play</button>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+	
+
+	<script type="text/javascript">
+		var canvas = document.getElementById("myCanvas");
+		var ctx = canvas.getContext("2d");
+		
+		var width = canvas.width = window.innerWidth;
+		var height = canvas.height = window.innerHeight;
+		
+		// Create gradient
+		var grd = ctx.createRadialGradient(75, 50, 5, 90, 60, 100);
+		grd.addColorStop(0, "red");
+		grd.addColorStop(1, "white");
+		
+		function random(min, max) {
+			var num = Math.floor(Math.random() * (max-min)) + min;
+			return num;
+		}
+		
+		function Ball() {
+			this.x = 50;
+			this.y = 50;
+			this.velX = random(-10, 10);
+			this.velY = random(-10, 10);
+			this.color = 'rgb(' + random(0, 255) + ',' + random(0, 255) + ',' + random(0, 255) +')';
+			this.size = random (10, 20);
+		}
+		
+		Ball.prototype.draw = function() {
+			ctx.beginPath();
+			ctx.fillStyle = this.color;
+			ctx.arc(this.x, this.y, this.size, 0, 2 * Math.PI);
+			ctx.fill();
+		}
+		
+		Ball.prototype.update = function() {
+			if ((this.x + this.size) >= width) {
+				this.velX = -(this.velX);
+			}
+
+			if ((this.x - this.size) <= 0) {
+				this.velX = -(this.velX);
+			}
+
+			if ((this.y + this.size) >= height) {
+				this.velY = -(this.velY);
+			}
+
+			if ((this.y - this.size) <= 0) {
+				this.velY = -(this.velY);
+			}
+
+			this.x += this.velX;
+			this.y += this.velY;
+		}
+		
+		var balls = [];
+		function loop() {
+			ctx.fillStyle = grd;
+			ctx.fillRect(0, 0, width, height);
+
+			while (balls.length < 5) {
+				var ball = new Ball();
+				balls.push(ball);
+			}
+			for (i = 0; i < balls.length; i++) {
+				balls[i].draw();
+				balls[i].update();
+			}
+			requestAnimationFrame(loop);
+		}
+		loop();
+	
+	</script>
+	
+</body>
+</html>
