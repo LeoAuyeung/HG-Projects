@@ -11,6 +11,7 @@ create background img/text
 	- "Click the mouse to fire!"
 
 limit canvas/game screen
+	- Make everything scalable based on user screen size
 
 create pointer thing in the middle
 	- ball + triangle as pointer
