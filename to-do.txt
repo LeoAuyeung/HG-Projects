@@ -1,0 +1,41 @@
+FIRST THINGS FIRST:
+- <head> make fxn better
+- rename variables to better suit project
+- Make sections for global variables, classes, functions, main/running of functions
+
+create title screen
+	- Play
+	
+create background img/text
+	- "Aim the balls using your cursor"
+	- "Click the mouse to fire!"
+
+limit canvas/game screen
+
+create pointer thing in the middle
+	- ball + triangle as pointer
+	- number of balls that will shoot out
+	
+create on mouse move -> pointer follows to the edge limit
+	- have multiple balls after it to guide where balls will shoot
+
+create on mouse click -> balls shoot out in proper direction
+	- have global variable keeping track of the angle
+
+update BALL functionality
+	- DISAPPEARS upon reaching bottom
+
+create BLOCK class
+	- xcor, ycor
+	- set size
+	- HP
+	- Color (changes based on Default HP)
+	
+create interaction between BALL and BLOCK
+	- Upon touching hitbox, ball bounces away at an angle
+	- Block HP goes down by one
+	- 
+	
+create scoreboard
+	- Keep track of how many blocks there are
+	- Keep track of levels
