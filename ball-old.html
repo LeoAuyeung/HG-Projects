@@ -1,0 +1,204 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<meta name="description" content="Demonstration of Ball-Z Game">
+	<meta name="keywords" content="HTML,CSS,JavaScript">
+	<meta name="author" content="Leo Au-Yeung">
+	
+	<title>Ball-Z Demo</title>
+	
+	<style>
+		<!--Not including style for now-->
+	</style>
+</head>
+
+<body>
+	
+	<canvas id="gameScreen" style="border:1px solid #000000;">
+	</canvas>
+	
+
+	<script type="text/javascript">
+	
+		<!-- ****************************************JAVASCRIPT SCRIPT BLOCK**************************************** -->
+		
+		<!-- ********************GLOBAL VARIABLES******************** -->
+		//Create canvas for game
+		var canvas = document.getElementById("gameScreen");
+		var ctx = canvas.getContext("2d");
+		
+		var gameWidth = canvas.width = window.innerWidth / 2;
+		var gameHeight = canvas.height = window.innerHeight / 2;
+		
+		var numBalls = 5;
+		
+		var ballLauncher;
+		var balls = [];
+		
+		//Boolean for whether game is running or not;
+		var running = false;
+		
+		//Mouse coordinates
+		var mouseX;
+		var mouseY;
+		//Ball start (Launcher) coordinates
+		var startX = gameWidth/2;
+		var startY = gameHeight - 10;
+		//Angle coordinates
+		var dx;
+		var dy;
+		
+		<!-- ********************END GLOBAL VARIABLES******************** -->
+		
+		
+		<!-- ********************CLASSES******************** -->
+		//Class BallLauncher
+		class BallLauncher {
+			constructor() {
+				this.x = gameWidth/2;
+				this.y = gameHeight - 10;
+				this.color = "rgb(0,0,0";
+				this.size = 5; 
+			}
+			draw() {
+				ctx.beginPath();
+				ctx.fillStyle = this.color;
+				//Drawing default guiding circles - UNDER CONSTRUCTION
+				ctx.arc(this.x, this.y, this.size, 0, 2 * Math.PI);
+				ctx.arc(mouseX, mouseY, this.size, 0, 2 * Math.PI);
+				/*
+				ctx.arc(this.x, this.y - 40, this.size, 0, 2 * Math.PI);
+				ctx.arc(this.x, this.y - 60, this.size, 0, 2 * Math.PI);
+				ctx.arc(this.x, this.y - 80, this.size, 0, 2 * Math.PI);
+				*/
+				ctx.fill();
+			}
+		}
+		
+		//Class Ball
+		class Ball {
+			//Constructor
+			constructor(angle) {
+				this.x = gameWidth/2;
+				this.y = gameHeight - 20;
+				this.dx = Math.cos(angle);
+				this.dy = Math.sin(angle);
+				this.color = 'rgb(' + random(0, 255) + ',' + random(0, 255) + ',' + random(0, 255) +')';
+				this.size = random (10, 20);
+			}
+			
+			//Draw - Creates ball using its xcor, ycor, and size
+			draw() {
+				ctx.beginPath();
+				ctx.fillStyle = this.color;
+				ctx.arc(this.x, this.y, this.size, 0, 2 * Math.PI);
+				ctx.fill();
+			}
+			
+			//move - Moves ball by updating xcor and ycor with dx and dy
+			//If ball has hit a wall, bounces off in opposite direction
+			move() {
+				//Interaction with LEFT wall
+				if ((this.x + this.size) >= gameWidth) {
+					this.dx = -(this.dx);
+				}
+				//Interaction with RIGHT wall
+				if ((this.x - this.size) <= 0) {
+					this.dx = -(this.dx);
+				}
+				//Interaction with UP wall
+				if ((this.y - this.size) <= 0) {
+					this.dy = -(this.dy);
+				}
+				//Interaction with DOWN wall
+				if ((this.y + this.size) >= gameHeight) {
+					this.dy = -(this.dy);
+				}
+
+				this.x += this.dx;
+				this.y += this.dy;
+			}
+		}
+		
+		<!-- ********************END CLASSES******************** -->
+		
+		
+		
+		<!-- ********************FUNCTIONS******************** -->
+		
+		function random(min, max) {
+			var num = Math.floor(Math.random() * (max-min)) + min;
+			return num;
+		}
+		
+		function setupLauncher() {
+			ballLauncher = new BallLauncher();
+			ballLauncher.draw();
+		}
+		
+		function pointLauncher(e) {
+			ctx.clearRect(0, 0, gameWidth, gameHeight); //Clears canvas
+			mouseX = e.clientX; //Update mouseX with xcor of cursor
+			mouseY = e.clientY; //Update mouseY with ycor of cursor
+			ballLauncher.draw();
+		}
+		
+		function setupBalls(angle) {
+			//Creates numBalls amount of balls
+			while (balls.length < numBalls) {
+				var ball = new Ball(angle); //Sets up ball with angle parameter
+				balls.push(ball);
+			}
+			for (i = 0; i < balls.length; i++) {
+				balls[i].draw();
+				balls[i].move();
+			}
+		}
+		
+		function moveBalls() {
+			ctx.clearRect(0, 0, gameWidth, gameHeight); //Clears canvas
+			//For each ball, draws and moves them
+			for (i = 0; i < balls.length; i++) {
+				balls[i].draw();
+				balls[i].move();
+			}
+		}
+		
+		<!-- ********************END FUNCTIONS******************** -->
+		
+		
+		<!-- ********************MAIN (RUNNING OF FUNCTIONS)******************** -->
+		
+		setupLauncher(); //Sets up ball launcher
+		
+		document.getElementById("gameScreen").onmousemove = function(event) {
+			var coor = "Coordinates: (" + mouseX + "," + mouseY + ")";
+			document.getElementById("coordinates").innerHTML = coor;
+			
+			if (running == false) {
+				pointLauncher(event); //Points launcher upon mouse hover (right now just creates a ball on cursor)
+			}
+		};
+		
+		document.getElementById("gameScreen").onclick = function(event) {
+			if (running == false) {
+				running = true; //Changes boolean flag for running of game
+				//Calculated angle based on cursor position and ball launcher (start) position
+				dx = mouseX - startX;
+				dy = mouseY - startY;
+				var angle = Math.atan2(dy, dx);
+				setupBalls(angle); //Setup all balls at correct angle (facing mouse cursor)
+				setInterval(moveBalls, 10); //Shoot balls
+			}
+		};
+		
+		<!-- ********************END MAIN (RUNNING OF FUNCTIONS)******************** -->
+	
+		<!-- ****************************************END JAVASCRIPT SCRIPT BLOCK**************************************** -->
+	</script>
+	
+	<p id="coordinates"></p>
+	
+</body>
+</html>
