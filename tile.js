@@ -1,13 +1,13 @@
 // Represents one brick in the game.
 class Tile {
 
-	constructor(canvas, j) {
+	constructor(canvas, pow, tileNumber) {
 		this.canvas = canvas;
 		this.SIZE = 50;
 
-		this.x = 100 * j;
+		this.x = 100 * tileNumber;
 		this.y = 100;
-		this.power = 5;
+		this.power = pow;
 	}
 
 	// Accessors
@@ -44,6 +44,11 @@ class Tile {
 	touchedByBall() {
 		if (--this.power <= 0) {
 			//this._erase();
-		};
+		}
+	}
+
+	// Shifts brick down one level
+	shiftDown() {
+		this.y += 50;
 	}
 }

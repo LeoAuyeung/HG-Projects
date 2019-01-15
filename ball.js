@@ -7,9 +7,6 @@ class Ball {
 		
 		this.position = canvas.getStartPosition(); //Initialize position variable
 		this.movement = new Movement(0, 0); //Initialize movement variable
-		
-		//this.dx = Math.cos(angle);
-		//this.dy = Math.sin(angle);
 	}
 	
 	// Returns whether the ball is currently moving.
@@ -29,7 +26,6 @@ class Ball {
 		this.canvas.draw().beginPath();
 		this.canvas.draw().arc(this.position.getX(), this.position.getY(), this.RADIUS, 0, 2 * Math.PI);
 		this.canvas.draw().fill();
-		console.log('DRAWING BALL');
 	}
 
 	//move - Moves ball by updating xcor and ycor with dx and dy
