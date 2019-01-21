@@ -3,7 +3,7 @@ $(function() {
 	var canvas = new Canvas();
 	var running = false; //game running flag
 	var startTime; //start time
-	var gameInterval; //holds value for setInterval
+	var request; //holds value for setInterval
 	
 	//Score/level
 	var score = 1;
@@ -20,7 +20,7 @@ $(function() {
 	
 	//Initializing first array within 2d array tiles
 	var tiles = [[]];
-	for (var tileNum = 0; tileNum < 5; tileNum++) {	
+	for (var tileNum = 0; tileNum < 7; tileNum++) {	
 		tiles[0].push( new Tile (canvas, score, tileNum) );
 	}
 	
@@ -36,11 +36,8 @@ $(function() {
 			ball.draw();
 			//Check if the ball should start moving
 			 if (!ball.isMoving()) {
-				if (Date.now() - startTime > 500 * i) {
-					ball.move(mvmt);
-				}
+				ball.move(mvmt);
 				ball.draw();
-				return;
 			}
 
 			var move = ball.createMovement();
@@ -62,11 +59,14 @@ $(function() {
 		}
 
 		//Checks whether balls have stopped moving - If true, handle end of round functionality
-		if (checkBallsStopped()) {
+		if (running == true && checkBallsStopped()) {
 			running = false;
 			console.log(`Ending level ${score}`)
 			handleRoundEnd();
 		}
+		
+		// ISSUE - MULTIPLE CALLS OF requestAnimationFrame SPEEDS UP THE BALL!!!
+		request = requestAnimationFrame(step);
 
 	};
 
@@ -80,6 +80,7 @@ $(function() {
 				return false;
 			}
 		//}
+		
 		//Otherwise, return true
 		return true;
 	}
@@ -105,14 +106,14 @@ $(function() {
 		//Creating new line of tiles
 		// Problem noticed (in terms of space) - The higher the levels get, the more arrays we have inside tiles
 		tiles.push(new Array());
-		for (var tileNum = 0; tileNum < 5; tileNum++) { tiles[score-1].push( new Tile(canvas, score, tileNum)); }
+		for (var tileNum = 0; tileNum < 7; tileNum++) { tiles[score-1].push( new Tile(canvas, score, tileNum)); }
 		
 		//Creating new ball - 1 extra ball per level
 		//balls.push(new Ball(canvas));
 		
 		drawTiles();
 
-		clearInterval(gameInterval);
+		cancelAnimationFrame(request);
 	}
 
 	var drawTiles = function() {
@@ -124,7 +125,7 @@ $(function() {
 		}
 	}
 	
-	//Point launcher on mouse move
+	//Point launcher on mouse move (only when game is not running)
 	onmousemove = function(event)  {
 		if (!running) {
 			drawTiles();
@@ -132,7 +133,7 @@ $(function() {
 		}
 	}
 	
-	//Shoot balls
+	//Shoot balls on mouse click (only when game is not running)
 	onclick = function(e) {
 		if (!running) {
 			running = true;
@@ -144,7 +145,9 @@ $(function() {
 					mouseX - canvas.getStartPosition().getX());
 			mvmt = new Movement(Math.cos(angle), Math.sin(angle));
 			startTime = Date.now();
-			gameInterval = setInterval(step, 5);
+			// gameInterval = setInterval(step, 5);
+			console.log("Calling step");
+			step();
 		}
 	}
 

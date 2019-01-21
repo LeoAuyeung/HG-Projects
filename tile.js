@@ -5,9 +5,11 @@ class Tile {
 		this.canvas = canvas;
 		this.SIZE = 50;
 
-		this.x = 100 * tileNumber;
+		this.x = 50 * tileNumber;
 		this.y = 100;
 		this.power = pow;
+
+		this.spawnTile = (Math.random()*100) < 50; // 50% chance of spawning a tile
 	}
 
 	// Accessors
@@ -17,7 +19,7 @@ class Tile {
 	getBottom() { return this.y + this.SIZE; }
 
 	// Returns whether the brick has not yet been destroyed.
-	isActive() { return this.power > 0; }
+	isActive() { return this.spawnTile && this.power > 0; }
 
 	// Draws the brick at its current location.
 	draw() {
@@ -26,8 +28,10 @@ class Tile {
 		}
 
 		// Draw rectangle.
-		this.canvas.setColor("#AAAAAA" /* grey */);
+		this.canvas.setColor("#FFFFFF" /* white */);
 		this.canvas.draw().fillRect(this.x, this.y, this.SIZE, this.SIZE);
+		this.canvas.setColor("#AAAAAA" /* grey */);
+		this.canvas.draw().fillRect(this.x + 2, this.y + 2, this.SIZE - 4, this.SIZE - 4);
 
 		// Draw text.
 		this.canvas.setColor("#000000" /* black */);
