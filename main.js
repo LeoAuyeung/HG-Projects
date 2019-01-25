@@ -36,7 +36,7 @@ $(function() {
 
 			//Check if the ball should start moving
 			if ( !(ball.isMoving()) ) { //ball initial movement
-				if (Date.now() - startTime > 1000 * ballIndex) { //check whether ball should start moving
+				if (Date.now() - startTime > 500 * ballIndex) { //check whether ball should start moving
 					console.log("Ball ", ballIndex, "'s current pos: ",
 						ball.getPosition().getX(), ", ", ball.getPosition().getY())
 					console.log("Starting ball ", ballIndex);

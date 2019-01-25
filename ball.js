@@ -5,7 +5,9 @@ class Ball {
 		this.canvas = canvas;
 		this.RADIUS = 5; //RADIUS (convention: CAPITALCASE = variable you won't change
 		
-		this.position = canvas.getStartPosition(); //Initialize position variable
+		//BIG BUG --> this.position = canvas.getStartPosition(); //Initialize position variable
+		
+		this.position = new Position (canvas.getStartPosition().getX(), canvas.getStartPosition().getY()); //Initialize position variable
 		this.movement = new Movement(0, 0); //Initialize movement variable
 	}
 	

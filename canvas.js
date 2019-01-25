@@ -6,7 +6,7 @@ class Canvas {
 		this.canvas = jQueryCanvas[0].getContext('2d');
 		this.width = jQueryCanvas.width();
 		this.height = jQueryCanvas.height();
-		this.startPosition = new Position (this.width / 2, this.height - 20);
+		this.startPosition = new Position (this.width / 2, this.height - 20); //BUG AQUI
 		console.log('Canvas dimensions are ' + this.width + ' x ' + this.height);
 	}
 	
