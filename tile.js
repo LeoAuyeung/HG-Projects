@@ -6,7 +6,7 @@ class Tile {
 		this.SIZE = 50;
 
 		this.x = 50 * tileNumber;
-		this.y = 100;
+		this.y = 50;
 		this.power = pow;
 
 		this.spawnTile = (Math.random()*100) < 50; // 50% chance of spawning a tile

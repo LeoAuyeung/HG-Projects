@@ -9,7 +9,6 @@
 	<title>Ball-Z Demo</title>
 	
 	<style>
-		<!--Not including style for now-->
 	</style>
 </head>
 
@@ -164,6 +163,21 @@
 				balls[i].move();
 			}
 		}
+
+		function loop() {
+			ctx.fillStyle = grd;
+			ctx.fillRect(0, 0, width, height);
+			while (balls.length < 5) {
+				var ball = new Ball();
+				balls.push(ball);
+			}
+			for (i = 0; i < balls.length; i++) {
+				balls[i].draw();
+				balls[i].update();
+			}
+			requestAnimationFrame(loop);
+		}
+		loop();
 		
 		<!-- ********************END FUNCTIONS******************** -->
 		

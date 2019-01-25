@@ -2,7 +2,8 @@ $(function() {
 	
 	var canvas = new Canvas();
 	var running = false; //game running flag
-	var startTime; //start time
+	var startTime;
+	var prevStartTime; //start time
 	var request; //holds value for setInterval
 	
 	//Score/level
@@ -16,7 +17,7 @@ $(function() {
 	
 	//Create the balls
 	var balls = [];
-	for (var i = 0; i < score; i++) { balls.push( new Ball(canvas) ); }
+	for (var ballNum = 0; ballNum < 5; ballNum++) { balls.push( new Ball(canvas) ); }
 	
 	//Initializing first array within 2d array tiles
 	var tiles = [[]];
@@ -28,58 +29,69 @@ $(function() {
 	var step = function() {
 		//Drawing tiles
 		drawTiles();
-
+		
 		//Drawing balls and moving balls
-		for (var i = 0 ; i < balls.length ; i++) {
-			var ball = balls[i];
+		for (var ballIndex = 0 ; ballIndex < balls.length ; ballIndex++) {
+			var ball = balls[ballIndex];
 			
 			ball.draw();
 			//Check if the ball should start moving
-			 if (!ball.isMoving()) {
-				ball.move(mvmt);
+			/*
+			ball 0 - move immediately
+			ball 1 - move 1000 ms after
+			ball 2 - move 1000 ms after that
+			...
+			*/
+			if (!ball.isMoving()) { //ball initial movement
+				console.log(ballIndex, " -- ", Date.now() - startTime);
+				if (Date.now() - startTime > 1000 * ballIndex) {
+					//prevStartTime = Date.now();
+					console.log("Starting ball ", ballIndex);
+					ball.move(mvmt);
+				}
 				ball.draw();
 			}
-
-			var move = ball.createMovement();
-			move.handleBorder(canvas);
+			console.log("Ball ", ballIndex, "is moving: " + ball.isMoving())
+			var movement = ball.createMovement();
+			movement.handleBorder(canvas);
 			//Updates tiles - redraws and checks if tiles have been touched
 			for (var i = 0; i < score; i++) {
 				for (var j = 0; j < tiles[i].length; j++) {
 					var tile = tiles[i][j];
 					//Checks whether tile has been touched by ball
-					if (move.handleTile(tile)) {
+					if (movement.handleTile(tile)) {
 						tile.touchedByBall();
 						tile.draw();
 					}
-					
 				}
 			}
-			ball.move(move.getMovement());
+
+			if (ball.isMoving) { ball.move(movement.getMovement()); }
 			ball.draw();
 		}
-
-		//Checks whether balls have stopped moving - If true, handle end of round functionality
-		if (running == true && checkBallsStopped()) {
-			running = false;
-			console.log(`Ending level ${score}`)
-			handleRoundEnd();
-		}
 		
-		// ISSUE - MULTIPLE CALLS OF requestAnimationFrame SPEEDS UP THE BALL!!!
-		request = requestAnimationFrame(step);
+		if (running == true) {
+			//Requesting animation of step function
+			request = requestAnimationFrame(step);
+			//Checks whether balls have stopped moving - If true, handle end of round functionality
+			if (checkBallsStopped()) {
+				running = false;
+				console.log(`Ending level ${score}`)
+				handleRoundEnd();
+			}
+		}
 
 	};
 
 	//Checks whether all balls have stopped (reached bottom of screen)
 	var checkBallsStopped = function() {
 		//If any balls are still moving, then balls have not stopped
-		//Commenting out for loop for now as there is only 1 ball
-		//for (var i = 0; i < score; i++) {
-			let ball = balls[0];
+		for (var i = 0; i < 5; i++) {
+			let ball = balls[i];
 			if (ball.movement.getDx() != 0 && ball.movement.getDy() != 0) {
 				return false;
 			}
-		//}
+		}
 		
 		//Otherwise, return true
 		return true;
@@ -137,7 +149,7 @@ $(function() {
 	onclick = function(e) {
 		if (!running) {
 			running = true;
-			console.log(`Starting level ${score}`)
+			console.log(`Starting level ${score}`);
 			var mouseX = e.clientX;
 			var mouseY = e.clientY;
 			if (mouseY > canvas.getStartPosition().getY()) { mouseY = canvas.getStartPosition().getY() - 45; }
