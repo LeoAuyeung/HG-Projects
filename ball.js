@@ -13,16 +13,20 @@ class Ball {
 	// All balls do not necesserily move at the beginning of the game.
 	isMoving() { return this.movement.isMoving() }
 	
-	//checkMove - checks movement of ball
-	//If ball has hit a tile, updates tile and bounces off in opposite direction
-	//If ball has hit a wall, bounces off in opposite direction
+	// createMovement - creates a new BallMovement class with ball's position && movement
+	// The BallMovement class handles the ball's collision with tiles/borders 
 	createMovement() {
 		return new BallMovement(this.position, this.movement);
+	}
+
+	// Returns ball's position (x-cor, y-cor)
+	getPosition() {
+		return this.position;
 	}
 		
 	//draw - Draws a ball using its current position
 	draw() {
-		this.canvas.setColor("#DDDDDD"); //Color = black
+		this.canvas.setColor("#000000"); //Color = black
 		this.canvas.draw().beginPath();
 		this.canvas.draw().arc(this.position.getX(), this.position.getY(), this.RADIUS, 0, 2 * Math.PI);
 		this.canvas.draw().fill();

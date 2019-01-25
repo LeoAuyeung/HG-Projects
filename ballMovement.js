@@ -7,21 +7,11 @@ class BallMovement {
 		this.movement = movement;
 	}
 
-	// Returns the direction of the ball.
-	// This should be called after the handleXxx() function have been called.
+	// Returns the movement (direction) of the ball.
 	getMovement() { return this.movement; }
 
 	// Handles the bounches around the canvas border.
 	handleBorder(canvas) {
-		/*// Left border.
-		this._handleRectangle(-10, -10, 0, canvas.getHeight() + 10);
-		// Right border.
-		this._handleRectangle(canvas.getWidth(), -10, canvas.getWidth() + 10, canvas.getHeight() + 10);
-		// Top border.
-		this._handleRectangle(-10, -10, canvas.getWidth() + 10, 0);
-		// Bottom border.
-		this._handleRectangle(-10, canvas.getHeight(), canvas.getWidth() + 10,
-		canvas.getHeight() + 10);*/
 		if ((this.position.getX() + this.movement.getDx()) >= canvas.getWidth()) {
 			this.movement.reverseX();
 		}
