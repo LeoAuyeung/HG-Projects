@@ -51,7 +51,7 @@ $(function() {
 				ballMovement.handleBorder(canvas);
 
 				//Updates tiles - redraws and checks if tiles have been touched
-				for (var i = 0; i < score; i++) {
+				for (var i = 0; i < tiles.length; i++) {
 					for (var j = 0; j < tiles[i].length; j++) {
 						var tile = tiles[i][j];
 						//Checks whether tile has been touched by ball

@@ -6,7 +6,7 @@ class Ball {
 		this.RADIUS = 5; //RADIUS (convention: CAPITALCASE = variable you won't change
 		
 		//BIG BUG --> this.position = canvas.getStartPosition(); //Initialize position variable
-		
+
 		this.position = new Position (canvas.getStartPosition().getX(), canvas.getStartPosition().getY()); //Initialize position variable
 		this.movement = new Movement(0, 0); //Initialize movement variable
 	}
@@ -37,8 +37,8 @@ class Ball {
 	//move - Moves ball by updating xcor and ycor with dx and dy
 	//If ball has hit a wall, bounces off in opposite direction
 	move(movement) {
-		this.movement = movement;
-		this.position.move(movement); //position.x += dx; position.y += dy;
+		this.movement = new Movement(movement.getDx(), movement.getDy());
+		this.position.move(this.movement); //position.x += dx; position.y += dy;
 		//console.log('X-pos:', this.position.getX(), ' Y-pos:', this.position.getY());
 		
 	}
