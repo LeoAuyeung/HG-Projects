@@ -6,6 +6,10 @@ class Position {
 		this.y = y;
 	}
 
+	//Mutators
+	setX(x) { return this.x = x; }
+	setY(y) { return this.y = y; }
+
 	// Accessors
 	getX() { return this.x; }
 	getY() { return this.y; }

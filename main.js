@@ -10,7 +10,7 @@ $(function() {
 	var score = 1;
 
 	//Ball movement
-	var mvmt;
+	var initialMovement;
 	
 	//Create the ball launcher
 	var launcher = new BallLauncher(canvas);
@@ -35,12 +35,13 @@ $(function() {
 			var ball = balls[ballIndex];
 
 			//Check if the ball should start moving
-			if ( !(ball.isMoving()) ) { //ball initial movement
+			if ( !ball.isMoving() && !ball.reachedBottom() ) { //ball initial movement
 				if (Date.now() - startTime > 500 * ballIndex) { //check whether ball should start moving
 					console.log("Ball ", ballIndex, "'s current pos: ",
 						ball.getPosition().getX(), ", ", ball.getPosition().getY())
 					console.log("Starting ball ", ballIndex);
-					ball.move(mvmt);
+					//ball.setReachedBottom(false); //have ball start moving - reset reached bottom
+					ball.move(initialMovement); //this is bug
 				}
 			}
 
@@ -156,7 +157,10 @@ $(function() {
 			var angle = Math.atan2(mouseY - canvas.getStartPosition().getY(), 
 					mouseX - canvas.getStartPosition().getX());
 			//mvmt - new Movement class based on position of cursor
-			mvmt = new Movement(Math.cos(angle), Math.sin(angle));
+			for (var i = 0; i < 5; i++) {
+				balls[i].setReachedBottom(false);
+			}
+			initialMovement = new Movement(Math.cos(angle), Math.sin(angle));
 			startTime = Date.now();
 			// gameInterval = setInterval(step, 5);
 			console.log("Calling step");
@@ -164,3 +168,6 @@ $(function() {
 		}
 	}
 });
+
+//Integration test - Globally
+//Unit Test - Locally

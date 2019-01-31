@@ -26,8 +26,10 @@ class BallMovement {
 		//Interaction with DOWN wall
 		if ((this.position.getY() + this.movement.getDy()) >= canvas.getHeight()) {
 			//this.movement.reverseY();
-			this.movement._setDx(0);
-			this.movement._setDy(0);
+			this.position.setY(canvas.getHeight());
+			this.movement.setDx(0);
+			this.movement.setDy(0);
+			console.log("Ball reached bottom");
 		}
 	}
 

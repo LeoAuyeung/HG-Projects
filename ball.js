@@ -9,6 +9,7 @@ class Ball {
 
 		this.position = new Position (canvas.getStartPosition().getX(), canvas.getStartPosition().getY()); //Initialize position variable
 		this.movement = new Movement(0, 0); //Initialize movement variable
+		this.hasReachedBottom = false;
 	}
 	
 	// Returns whether the ball is currently moving.
@@ -19,6 +20,14 @@ class Ball {
 	// The BallMovement class handles the ball's collision with tiles/borders 
 	createMovement() {
 		return new BallMovement(this.position, this.movement);
+	}
+
+	reachedBottom() {
+		return this.hasReachedBottom; // STILL NEED TO SET HASREACHEDBOTTOM TO TRUE WHEN IT REACHES
+	}
+
+	setReachedBottom(bool) {
+		this.hasReachedBottom = bool;
 	}
 
 	// Returns ball's position (x-cor, y-cor)
@@ -37,9 +46,14 @@ class Ball {
 	//move - Moves ball by updating xcor and ycor with dx and dy
 	//If ball has hit a wall, bounces off in opposite direction
 	move(movement) {
-		this.movement = new Movement(movement.getDx(), movement.getDy());
+		//this.movement = new Movement(movement.getDx(), movement.getDy());
+		this.movement.setDx(movement.getDx());
+		this.movement.setDy(movement.getDy());
 		this.position.move(this.movement); //position.x += dx; position.y += dy;
 		//console.log('X-pos:', this.position.getX(), ' Y-pos:', this.position.getY());
-		
+		if (this.position.getY() >= this.canvas.getHeight()) {
+			this.hasReachedBottom = true;
+			console.log("Ball REACHED BOTTOM");
+		}
 	}
 }

@@ -7,8 +7,8 @@ class Movement {
 	}
 	
 	//Mutators
-	_setDx(dx) { return this.dx = dx; }
-	_setDy(dy) { return this.dy = dy; }
+	setDx(dx) { return this.dx = dx; }
+	setDy(dy) { return this.dy = dy; }
 	
 	// Accessors
 	getDx() { return this.dx; }
