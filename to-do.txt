@@ -1,7 +1,6 @@
 FIRST THINGS FIRST:
 - <head> make fxn better
 - rename variables to better suit project
-- Make sections for global variables, classes, functions, main/running of functions
 
 create title screen
 	- Play
@@ -12,10 +11,6 @@ create background img/text
 
 limit canvas/game screen
 	- Make everything scalable based on user screen size
-
-create pointer thing in the middle
-	- ball + triangle as pointer
-	- number of balls that will shoot out
 	
 create on mouse move -> pointer follows to the edge limit
 	- have multiple balls after it to guide where balls will shoot
