@@ -3,8 +3,9 @@ $(function() {
 	var canvas = new Canvas();
 	var running = false; //game running flag
 	var gameOver = false; //game over flag
-	var startTime;
+	var startTime; //holds value for game's start time
 	var request; //holds value for requestAnimationFrame
+	var firstBallStopped = false; //holds boolean for first ball stopping
 	
 	//Score/level
 	var score = 1;
@@ -17,7 +18,7 @@ $(function() {
 	
 	//Create the balls
 	var balls = [];
-	for (var ballNum = 0; ballNum < 5; ballNum++) { balls.push( new Ball(canvas) ); }
+	for (var ballNum = 0; ballNum < 10; ballNum++) { balls.push( new Ball(canvas) ); }
 	
 	//Initializing first array within 2d array tiles
 	var tiles = [[]];
@@ -31,16 +32,15 @@ $(function() {
 		drawTiles();
 		
 		//Drawing balls and moving balls
-		for (var ballIndex = 0 ; ballIndex < balls.length ; ballIndex++) {
+		for (var ballIndex = 0; ballIndex < balls.length; ballIndex++) {
 			var ball = balls[ballIndex];
 
 			//Check if the ball should start moving
 			if ( !ball.isMoving() && !ball.reachedBottom() ) { //ball initial movement
-				if (Date.now() - startTime > 500 * ballIndex) { //check whether ball should start moving
-					console.log("Ball ", ballIndex, "'s current pos: ",
-						ball.getPosition().getX(), ", ", ball.getPosition().getY())
+				if (Date.now() - startTime > 250 * ballIndex) { //check whether ball should start moving
+					// console.log("Ball ", ballIndex, "'s current pos: ",
+					// 	ball.getPosition().getX(), ", ", ball.getPosition().getY())
 					console.log("Starting ball ", ballIndex);
-					//ball.setReachedBottom(false); //have ball start moving - reset reached bottom
 					ball.move(initialMovement); //this is bug
 				}
 			}
@@ -66,6 +66,15 @@ $(function() {
 				ball.move(ballMovement.getMovement());
 			}
 
+			//Keep track of first stopped ball's position
+			else if (ball.reachedBottom() && !firstBallStopped) {
+				console.log("First ball has stopped!");
+				console.log("First ball stopped at coordinates: ", ball.getPosition().getX(), 
+					",", ball.getPosition().getY());
+				firstBallStopped = true;
+				canvas.setStartPosition(ball.getPosition().getX(), ball.getPosition().getY());
+			}
+
 			ball.draw();
 		}
 		
@@ -84,11 +93,9 @@ $(function() {
 	//Checks whether all balls have stopped (reached bottom of screen)
 	var checkBallsStopped = function() {
 		//If any balls are still moving, then balls have not stopped
-		for (var i = 0; i < 5; i++) {
+		for (var i = 0; i < balls.length; i++) {
 			let ball = balls[i];
-			if (ball.movement.getDx() != 0 && ball.movement.getDy() != 0) {
-				return false;
-			}
+			if (ball.reachedBottom() == false) { return false; }
 		}
 		//Otherwise, return true
 		return true;
@@ -96,6 +103,13 @@ $(function() {
 
 	//Handles functionality at end of one round
 	var handleRoundEnd = function() {
+		//Set all balls to new start position
+		for (var ballIndex = 0; ballIndex < balls.length; ballIndex++) {
+			var ball = balls[ballIndex];
+			ball.setPosition(canvas.getStartPosition().getX(), 
+				canvas.getStartPosition().getY());
+		}
+
 		//Shifting all tiles down
 		for (var i = 0; i < score; i++) { 
 			for (var j = 0; j < tiles[i].length; j++) {
@@ -113,12 +127,14 @@ $(function() {
 		score++;
 
 		//Creating new line of tiles
-		// Problem noticed (in terms of space) - The higher the levels get, the more arrays we have inside tiles
 		tiles.push(new Array());
 		for (var tileNum = 0; tileNum < 7; tileNum++) { tiles[score-1].push( new Tile(canvas, score, tileNum)); }
 		
-		//Creating new ball - 1 extra ball per level
-		//balls.push(new Ball(canvas));
+		//Creating new ball - extra balls based on level
+		console.log(`Adding ${Math.floor(score/2)} new balls`);
+		for (var s = 0; s < Math.floor(score/2); s++) {
+			balls.push(new Ball(canvas));
+		}
 		
 		drawTiles();
 
@@ -140,7 +156,7 @@ $(function() {
 			drawTiles();
 			launcher.draw(event); //Points launcher upon mouse hover (right now just creates a ball on cursor)
 		}
-		if (gameOver == true) {
+		else if (gameOver == true) {
 			var gameOverMessage = "Game has ended. Please refresh the page to play again.";
 			document.getElementById('gameMessage').innerHTML = gameOverMessage;
 		}
@@ -149,21 +165,25 @@ $(function() {
 	//Shoot balls on mouse click (only when game is not running)
 	onclick = function(e) {
 		if (!running && gameOver == false) {
-			running = true;
 			console.log(`Starting level ${score}`);
+			running = true;
+			firstBallStopped = false;
 			var mouseX = e.clientX;
 			var mouseY = e.clientY;
 			if (mouseY > canvas.getStartPosition().getY()) { mouseY = canvas.getStartPosition().getY() - 45; }
 			var angle = Math.atan2(mouseY - canvas.getStartPosition().getY(), 
 					mouseX - canvas.getStartPosition().getX());
-			//mvmt - new Movement class based on position of cursor
-			for (var i = 0; i < 5; i++) {
+
+			//Resetting balls' hasReachedBottom variable
+			for (var i = 0; i < balls.length; i++) {
 				balls[i].setReachedBottom(false);
 			}
+
+			//initialMovement - new Movement class based on position of cursor
 			initialMovement = new Movement(Math.cos(angle), Math.sin(angle));
 			startTime = Date.now();
-			// gameInterval = setInterval(step, 5);
-			console.log("Calling step");
+
+			console.log("Calling: step()");
 			step();
 		}
 	}

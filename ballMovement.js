@@ -29,7 +29,6 @@ class BallMovement {
 			this.position.setY(canvas.getHeight());
 			this.movement.setDx(0);
 			this.movement.setDy(0);
-			console.log("Ball reached bottom");
 		}
 	}
 

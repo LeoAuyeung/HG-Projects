@@ -34,6 +34,11 @@ class Ball {
 	getPosition() {
 		return this.position;
 	}
+
+	setPosition(x, y) {
+		this.position.setX(x);
+		this.position.setY(y);
+	}
 		
 	//draw - Draws a ball using its current position
 	draw() {
@@ -53,7 +58,7 @@ class Ball {
 		//console.log('X-pos:', this.position.getX(), ' Y-pos:', this.position.getY());
 		if (this.position.getY() >= this.canvas.getHeight()) {
 			this.hasReachedBottom = true;
-			console.log("Ball REACHED BOTTOM");
+			console.log("Ball reached bottom");
 		}
 	}
 }
